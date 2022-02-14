@@ -2,34 +2,37 @@ const canvas = document.getElementById("myCanvas");
 const canvasContext = canvas.getContext("2d");
 const player = new Player(30, "blue"); // creating a player
 const targets = [];
+let click = {};
 
 // setting canvas to fullscreen
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// spawning enemies
-function spawnEnemies() {
-  setInterval(() => {
-    const radius = Math.random() * (40 - 12) + 12;
-    let x;
-    let y;
-    if (Math.random() < 0.5) {
-      x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
-      y = Math.random() * canvas.height;
-    } else {
-      x = Math.random() * canvas.width;
-      y = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
-    }
-    const velocity = getVelocity({ x: x, y: y });
-    targets.push(new Target(x, y, radius, "red", velocity));
-  }, 1000);
+// getting random targets
+function getRandomTarget() {
+  const radius = Math.random() * (40 - 30) + 30;
+  let x;
+  let y;
+  if (Math.random() < 0.5) {
+    x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
+    y = Math.random() * canvas.height;
+  } else {
+    x = Math.random() * canvas.width;
+    y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius;
+  }
+  const velocity = getVelocity({ x: x, y: y });
+
+  return {
+    x,
+    y,
+    radius,
+    velocity,
+  };
 }
 
 //update position of each target on targets[]
-function updateTargetsPosition() {
-  targets.forEach((target) => {
-    target.updatePosition();
-  });
+function updateTargetsPosition(target) {
+  target.updatePosition();
 }
 
 // getting angle
@@ -44,16 +47,46 @@ function getVelocity(objPosition) {
   };
 }
 
+// spawning enemies
+function spawnEnemies() {
+  setInterval(() => {
+    const { x, y, radius, velocity } = getRandomTarget();
+    const target = new Target(x, y, radius, "red", velocity);
+    targets.length < 10 ? targets.push(target) : "";
+  }, 400);
+}
+
+// checking if click matches target position
+function checkClick() {
+  const start = performance.now();
+  targets.forEach((target, index) => {
+    const distance = Math.hypot(click.x - target.x, click.y - target.y);
+    if (distance - (target.radius + 10) <= 1) {
+      setTimeout((_) => {
+        targets.splice(index, 1);
+      }, 0);
+    }
+  });
+
+  click = {};
+}
+
 // animating canvas
 function animate() {
   window.requestAnimationFrame(animate);
   canvasContext.clearRect(0, 0, canvas.width, canvas.height);
   player.draw();
 
-  updateTargetsPosition();
+  targets.forEach((target) => {
+    updateTargetsPosition(target);
+  });
 }
 
 // game
+canvas.addEventListener("click", (event) => {
+  click = { x: event.clientX, y: event.clientY };
 
+  checkClick();
+});
 spawnEnemies();
 animate();
