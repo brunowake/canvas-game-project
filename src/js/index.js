@@ -53,7 +53,7 @@ function spawnEnemies() {
     const { x, y, radius, velocity } = getRandomTarget();
     const target = new Target(x, y, radius, "red", velocity);
     targets.length < 10 ? targets.push(target) : "";
-  }, 400);
+  }, 200);
 }
 
 // checking if click matches target position
@@ -61,7 +61,7 @@ function checkClick() {
   const start = performance.now();
   targets.forEach((target, index) => {
     const distance = Math.hypot(click.x - target.x, click.y - target.y);
-    if (distance - (target.radius + 10) <= 1) {
+    if (distance - target.radius * 1.4 <= 1) {
       setTimeout((_) => {
         targets.splice(index, 1);
       }, 0);
@@ -70,15 +70,23 @@ function checkClick() {
 
   click = {};
 }
+// checking if the target hits the player
+function playerColision(target, animationId) {
+  const distance = Math.hypot(player.x - target.x, player.y - target.y);
+  if (distance - target.radius * 1.8 < 1) {
+    window.cancelAnimationFrame(animationId);
+  }
+}
 
 // animating canvas
 function animate() {
-  window.requestAnimationFrame(animate);
+  const animationId = window.requestAnimationFrame(animate);
   canvasContext.clearRect(0, 0, canvas.width, canvas.height);
   player.draw();
 
   targets.forEach((target) => {
     updateTargetsPosition(target);
+    playerColision(target, animationId);
   });
 }
 
