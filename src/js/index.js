@@ -10,8 +10,18 @@ canvas.height = window.innerHeight;
 // spawning enemies
 function spawnEnemies() {
   setInterval(() => {
-    const velocity = getVelocity({ x: 100, y: 100 });
-    targets.push(new Target(100, 100, 30, "red", velocity));
+    const radius = Math.random() * (40 - 12) + 12;
+    let x;
+    let y;
+    if (Math.random() < 0.5) {
+      x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
+      y = Math.random() * canvas.height;
+    } else {
+      x = Math.random() * canvas.width;
+      y = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
+    }
+    const velocity = getVelocity({ x: x, y: y });
+    targets.push(new Target(x, y, radius, "red", velocity));
   }, 1000);
 }
 
