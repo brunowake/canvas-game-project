@@ -3,6 +3,9 @@ const canvasContext = canvas.getContext("2d");
 const player = new Player(30, "blue"); // creating a player
 const targets = [];
 let click = {};
+let maxOfTargets = 1;
+let score = 0;
+let velocityMultiplier = 1;
 
 // setting canvas to fullscreen
 canvas.width = window.innerWidth;
@@ -42,28 +45,34 @@ function getAngle(objPosition) {
 // getting velocity
 function getVelocity(objPosition) {
   return {
-    x: Math.cos(getAngle(objPosition)),
-    y: Math.sin(getAngle(objPosition)),
+    x: Math.cos(getAngle(objPosition)) * velocityMultiplier,
+    y: Math.sin(getAngle(objPosition)) * velocityMultiplier,
   };
 }
 
 // spawning enemies
-function spawnEnemies() {
-  setInterval(() => {
+function spawnEnemies(intervaltimer) {
+  const intervalId = setInterval(() => {
     const { x, y, radius, velocity } = getRandomTarget();
+
     const target = new Target(x, y, radius, "red", velocity);
-    targets.length < 10 ? targets.push(target) : "";
-  }, 200);
+    targets.length < maxOfTargets ? targets.push(target) : "";
+  }, 500);
+
+  return intervalId;
 }
 
 // checking if click matches target position
 function checkClick() {
-  const start = performance.now();
   targets.forEach((target, index) => {
     const distance = Math.hypot(click.x - target.x, click.y - target.y);
     if (distance - target.radius * 1.4 <= 1) {
+      maxOfTargets++;
       setTimeout((_) => {
         targets.splice(index, 1);
+        velocityMultiplier += 0.02;
+        score++;
+        console.log(score);
       }, 0);
     }
   });
@@ -73,8 +82,10 @@ function checkClick() {
 // checking if the target hits the player
 function playerColision(target, animationId) {
   const distance = Math.hypot(player.x - target.x, player.y - target.y);
-  if (distance - target.radius * 1.8 < 1) {
+  if (distance - target.radius - player.radius < 1) {
     window.cancelAnimationFrame(animationId);
+    score = score * velocityMultiplier;
+    console.log(Math.ceil(score).toFixed(2));
   }
 }
 
@@ -96,5 +107,6 @@ canvas.addEventListener("click", (event) => {
 
   checkClick();
 });
+
 spawnEnemies();
 animate();
