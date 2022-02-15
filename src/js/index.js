@@ -1,11 +1,21 @@
 const canvas = document.getElementById("myCanvas");
 const canvasContext = canvas.getContext("2d");
 const player = new Player(30, "blue"); // creating a player
+const scoreValueElement = document.getElementById("scoreValue");
+const startBtn = document.getElementById("startBtn");
+const modal = document.getElementById("modal");
+const finalScore = document.getElementById("finalScore");
 const targets = [];
 let click = {};
 let maxOfTargets = 1;
 let score = 0;
 let velocityMultiplier = 1;
+let interval;
+
+// update game score
+function updateScoreElement(score) {
+  scoreValueElement.innerText = score;
+}
 
 // setting canvas to fullscreen
 canvas.width = window.innerWidth;
@@ -13,7 +23,7 @@ canvas.height = window.innerHeight;
 
 // getting random targets
 function getRandomTarget() {
-  const radius = Math.random() * (40 - 30) + 30;
+  const radius = Math.random() * (40 - 20) + 20;
   let x;
   let y;
   if (Math.random() < 0.5) {
@@ -51,7 +61,7 @@ function getVelocity(objPosition) {
 }
 
 // spawning enemies
-function spawnEnemies(intervaltimer) {
+function spawnEnemies() {
   const intervalId = setInterval(() => {
     const { x, y, radius, velocity } = getRandomTarget();
 
@@ -71,8 +81,8 @@ function checkClick() {
       setTimeout((_) => {
         targets.splice(index, 1);
         velocityMultiplier += 0.02;
-        score++;
-        console.log(score);
+        score += Math.round((70 - target.radius) * velocityMultiplier);
+        updateScoreElement(score);
       }, 0);
     }
   });
@@ -84,8 +94,10 @@ function playerColision(target, animationId) {
   const distance = Math.hypot(player.x - target.x, player.y - target.y);
   if (distance - target.radius - player.radius < 1) {
     window.cancelAnimationFrame(animationId);
-    score = score * velocityMultiplier;
-    console.log(Math.ceil(score).toFixed(2));
+    finalScore.innerText = score.toFixed(0);
+    clearInterval(interval);
+    velocityMultiplier = 1;
+    modal.classList.remove("hidden");
   }
 }
 
@@ -104,9 +116,14 @@ function animate() {
 // game
 canvas.addEventListener("click", (event) => {
   click = { x: event.clientX, y: event.clientY };
-
   checkClick();
 });
 
-spawnEnemies();
-animate();
+startBtn.addEventListener("click", (event) => {
+  modal.classList.add("hidden");
+  score = 0;
+  targets.splice(0, targets.length);
+  updateScoreElement(score);
+  interval = spawnEnemies();
+  animate();
+});

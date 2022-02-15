@@ -8,8 +8,18 @@
     <link rel="stylesheet" href="./src/css/style.css" />
   </head>
 
+    <div id="myScore" class="my-score"><span>Score: </span> <span id="scoreValue"></span></div>
     <canvas id="myCanvas"></canvas>
+    <div class="modal" id="modal">
+      <div class="modal-elements">
+        <h1 id="finalScore">0</h1>
+        <p>Final Score</p>
 
+        <div>
+          <button id="startBtn">Start Game</button>
+        </div>
+      </div>
+    </div>
 
     <script src="./src/js/aimlab.js"></script>
     <script src="./src/js/index.js"></script>
