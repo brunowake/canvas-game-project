@@ -1,27 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="./src/css/style.css" />
-  </head>
+<html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>JavaScript - Drag and Drop Demo</title>
+      <link rel="stylesheet" href="./src/css/style.css" />
+    </head>
 
-    <div id="myScore" class="my-score"><span>Score: </span> <span id="scoreValue"></span></div>
-    <canvas id="myCanvas"></canvas>
-    <div class="modal" id="modal">
-      <div class="modal-elements">
-        <h1 id="finalScore">0</h1>
-        <p>Final Score</p>
+    <body style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="container">
+        <aside id="asideList" class="asideList">
+          <h1>Escolha o seu jogo:</h1>
+        </aside>
+        <main class="main-content">
+          <iframe id="frame" class="frame"></iframe>
+          <div class="menu">
+            <div class="drop-targets">
+              <div class="box" id="box"></div>
+              <button id="renderBtn" class="btn">Start</button>
+            </div>
+            <div class="game-content-display">
+              <h1 id="game-name">Jogo selecionado</h1>
+              <span id="creator-name">Quem fez</span>
 
-        <div>
-          <button id="startBtn">Start Game</button>
-        </div>
+              <p id="game-description">
+                Escolha o jogo na aba ao lado, clique e arraste para o circulo.
+                Para iniciar o jogo basta clickar no botao start
+              </p>
+            </div>
+          </div>
+        </main>
       </div>
-    </div>
-
-    <script src="./src/js/aimlab.js"></script>
-    <script src="./src/js/index.js"></script>
-  </body>
+      <script src="./src/js/index.js"></script>
+    </body>
+  </html>
 </html>

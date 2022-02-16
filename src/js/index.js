@@ -1,129 +1,120 @@
-const canvas = document.getElementById("myCanvas");
-const canvasContext = canvas.getContext("2d");
-const player = new Player(30, "blue"); // creating a player
-const scoreValueElement = document.getElementById("scoreValue");
-const startBtn = document.getElementById("startBtn");
-const modal = document.getElementById("modal");
-const finalScore = document.getElementById("finalScore");
-const targets = [];
-let click = {};
-let maxOfTargets = 1;
-let score = 0;
-let velocityMultiplier = 1;
-let interval;
+/* draggable element */
 
-// update game score
-function updateScoreElement(score) {
-  scoreValueElement.innerText = score;
+// https://www.javascripttutorial.net/web-apis/javascript-drag-and-drop/
+
+// read file
+
+const asideList = document.getElementById("asideList");
+const renderBtn = document.getElementById("renderBtn");
+
+window.onload = function () {
+  renderListElements();
+};
+
+function renderListElements() {
+  fetch("./src/data/data.json")
+    .then((response) => response.json())
+    .then((text) => {
+      text.forEach((element, index) => {
+        const div = `<div class=" items" id="item${index}" draggable="true">
+        <span >${element.game}</span>
+        <img draggable="false"  class ='img'src='./src/img/${element.game}.png' />
+        <span class='hidden' >${element.name}</span>
+        <span class='hidden'>${element.description}</span>
+        <span class='hidden'>${element.folderName}</span></div>`;
+        asideList.insertAdjacentHTML("beforeend", div);
+      });
+      const item = document.querySelectorAll(".items");
+      item.forEach((element) =>
+        element.addEventListener("dragstart", dragStart)
+      );
+    });
 }
 
-// setting canvas to fullscreen
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-// getting random targets
-function getRandomTarget() {
-  const radius = Math.random() * (40 - 20) + 20;
-  let x;
-  let y;
-  if (Math.random() < 0.5) {
-    x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
-    y = Math.random() * canvas.height;
-  } else {
-    x = Math.random() * canvas.width;
-    y = Math.random() < 0.5 ? 0 - radius : canvas.height + radius;
-  }
-  const velocity = getVelocity({ x: x, y: y });
-
-  return {
-    x,
-    y,
-    radius,
-    velocity,
-  };
+function dragStart(e) {
+  e.dataTransfer.setData("text/plain", e.target.id);
+  setTimeout(() => {
+    e.target.classList.add("hide");
+  }, 0);
 }
 
-//update position of each target on targets[]
-function updateTargetsPosition(target) {
-  target.updatePosition();
-}
+/* drop targets */
+const boxes = document.querySelectorAll(".box");
 
-// getting angle
-function getAngle(objPosition) {
-  return Math.atan2(center.y - objPosition.y, center.x - objPosition.x);
-}
-// getting velocity
-function getVelocity(objPosition) {
-  return {
-    x: Math.cos(getAngle(objPosition)) * velocityMultiplier,
-    y: Math.sin(getAngle(objPosition)) * velocityMultiplier,
-  };
-}
-
-// spawning enemies
-function spawnEnemies() {
-  const intervalId = setInterval(() => {
-    const { x, y, radius, velocity } = getRandomTarget();
-
-    const target = new Target(x, y, radius, "red", velocity);
-    targets.length < maxOfTargets ? targets.push(target) : "";
-  }, 500);
-
-  return intervalId;
-}
-
-// checking if click matches target position
-function checkClick() {
-  targets.forEach((target, index) => {
-    const distance = Math.hypot(click.x - target.x, click.y - target.y);
-    if (distance - target.radius * 1.4 <= 1) {
-      maxOfTargets++;
-      setTimeout((_) => {
-        targets.splice(index, 1);
-        velocityMultiplier += 0.02;
-        score += Math.round((70 - target.radius) * velocityMultiplier);
-        updateScoreElement(score);
-      }, 0);
-    }
-  });
-
-  click = {};
-}
-// checking if the target hits the player
-function playerColision(target, animationId) {
-  const distance = Math.hypot(player.x - target.x, player.y - target.y);
-  if (distance - target.radius - player.radius < 1) {
-    window.cancelAnimationFrame(animationId);
-    finalScore.innerText = score.toFixed(0);
-    clearInterval(interval);
-    velocityMultiplier = 1;
-    modal.classList.remove("hidden");
-  }
-}
-
-// animating canvas
-function animate() {
-  const animationId = window.requestAnimationFrame(animate);
-  canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-  player.draw();
-
-  targets.forEach((target) => {
-    updateTargetsPosition(target);
-    playerColision(target, animationId);
-  });
-}
-
-// game
-canvas.addEventListener("click", (event) => {
-  click = { x: event.clientX, y: event.clientY };
-  checkClick();
+boxes.forEach((box) => {
+  box.addEventListener("dragenter", dragEnter);
+  box.addEventListener("dragover", dragOver);
+  box.addEventListener("dragleave", dragLeave);
+  box.addEventListener("drop", drop);
 });
 
-startBtn.addEventListener("click", (event) => {
-  modal.classList.add("hidden");
-  score = 0;
-  targets.splice(0, targets.length);
-  updateScoreElement(score);
-  interval = spawnEnemies();
-  animate();
-});
+asideList.addEventListener("dragenter", dragEnter);
+asideList.addEventListener("dragover", dragOver);
+asideList.addEventListener("dragleave", dragLeave);
+asideList.addEventListener("drop", drop);
+
+function dragEnter(e) {
+  e.preventDefault();
+
+  e.target.classList.contains("asideList") || e.target.classList.contains("box")
+    ? e.target.classList.add("drag-over")
+    : e.target.classList.remove("drag-over");
+}
+
+function dragOver(e) {
+  e.preventDefault();
+  e.target.classList.contains("asideList") || e.target.classList.contains("box")
+    ? e.target.classList.add("drag-over")
+    : e.target.classList.remove("drag-over");
+}
+
+function dragLeave(e) {
+  e.target.classList.remove("drag-over");
+}
+
+function drop(e) {
+  e.target.classList.remove("drag-over");
+
+  // get the draggable element
+  const id = e.dataTransfer.getData("text/plain");
+
+  const draggable = document.getElementById(id);
+
+  // add it to the drop target
+
+  e.target.classList.contains("items") ? "" : e.target.appendChild(draggable);
+
+  console.log(draggable.firstElementChild);
+
+  // display the draggable element
+  draggable.parentElement.classList.contains("box")
+    ? (draggable.classList.add("list-item-to-circle"),
+      draggable.classList.add("align-img-circle"),
+      draggable.firstElementChild.classList.add("hide"))
+    : (draggable.classList.remove("list-item-to-circle"),
+      draggable.classList.remove("align-img-circle"),
+      draggable.firstElementChild.classList.remove("hide"));
+
+  draggable.classList.remove("hide");
+}
+
+// button handler
+
+function renderIframe() {
+  const firstChild = boxes[0].firstChild;
+  const [game, name, description] =
+    firstChild !== null ? [...firstChild.querySelectorAll("span")] : [];
+
+  const iframe = document.getElementById("frame");
+  const creatorName = document.getElementById("creator-name");
+  const gameName = document.getElementById("game-name");
+  const gameDescription = document.getElementById("game-description");
+  boxes[0].firstChild === null
+    ? alert("insira o elemento 1")
+    : ((iframe.src = `./src/folders/${firstChild.lastChild.innerText}/index.html`),
+      (creatorName.innerText = name.innerText),
+      (gameName.innerText = game.innerText),
+      (gameDescription.innerText = description.innerText));
+}
+
+renderBtn.addEventListener("click", renderIframe);
