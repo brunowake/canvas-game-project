@@ -47,7 +47,7 @@ function renderListElements() {
       text.forEach((element, index) => {
         const div = `<div class=" items" id="item${index}" draggable="true">
         <span >${element.game}</span>
-        <img draggable="false"  class ='img'src='./src/img/${element.game}.png' />
+        <img draggable="false"  class ='img'src='./src/img/${element.game.toLowerCase()}.png' />
         <span class='hidden' >${element.name}</span>
         <span class='hidden'>${element.description}</span>
         <span class='hidden'>${element.folderName}</span></div>`;
