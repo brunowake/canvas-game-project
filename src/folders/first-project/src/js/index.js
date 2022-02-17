@@ -1,6 +1,6 @@
 const canvas = document.getElementById("myCanvas");
 const canvasContext = canvas.getContext("2d");
-const player = new Player(30, "blue"); // creating a player
+const player = new Player(30, "#A7CFF2"); // creating a player
 const scoreValueElement = document.getElementById("scoreValue");
 const startBtn = document.getElementById("startBtn");
 const modal = document.getElementById("modal");
@@ -104,7 +104,9 @@ function playerColision(target, animationId) {
 // animating canvas
 function animate() {
   const animationId = window.requestAnimationFrame(animate);
-  canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+  canvasContext.rect(0, 0, canvas.width, canvas.height);
+  canvasContext.fillStyle = "#2F5373";
+  canvasContext.fill();
   player.draw();
 
   targets.forEach((target) => {
