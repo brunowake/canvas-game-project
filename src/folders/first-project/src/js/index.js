@@ -16,6 +16,19 @@ let interval;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// game
+canvas.addEventListener("click", (event) => {
+  click = { x: event.clientX, y: event.clientY };
+  checkClick();
+});
+
+startBtn.addEventListener("click", (event) => {
+  modal.classList.add("hidden");
+  clearData();
+  interval = spawnEnemies();
+  animate();
+});
+
 // update game score
 function updateScoreElement(score) {
   scoreValueElement.innerText = score;
@@ -146,16 +159,3 @@ function clearData() {
   removeTargets(0, targets.length);
   updateScoreElement(player.score);
 }
-
-// game
-canvas.addEventListener("click", (event) => {
-  click = { x: event.clientX, y: event.clientY };
-  checkClick();
-});
-
-startBtn.addEventListener("click", (event) => {
-  modal.classList.add("hidden");
-  clearData();
-  interval = spawnEnemies();
-  animate();
-});
