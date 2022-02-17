@@ -5,11 +5,12 @@ const center = Object.freeze({
 
 // player class
 class Player {
-  constructor(radius, color) {
+  constructor() {
     this.x = center.x;
     this.y = center.y;
-    this.radius = radius;
-    this.color = color;
+    this.radius = 30;
+    this.color = "#A7CFF2";
+    this.score = 0;
   }
 
   draw() {
@@ -23,12 +24,12 @@ class Player {
 // target class
 
 class Target {
-  constructor(x, y, radius, color, velocity) {
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
-    this.color = color;
-    this.velocity = velocity;
+  constructor(obj) {
+    this.x = obj.x;
+    this.y = obj.y;
+    this.radius = obj.radius;
+    this.color = obj.color;
+    this.velocity = obj.velocity;
   }
 
   draw() {
