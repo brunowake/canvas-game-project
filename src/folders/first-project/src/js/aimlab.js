@@ -61,6 +61,7 @@ class Game {
   clearData() {
     this.player.score = 0;
     this.removeTargets(0, this.targets.length);
+    this.velocityMultiplier = 1;
   }
 
   removeTargets(start, qtd) {
@@ -159,16 +160,15 @@ class Game {
     return this.isGameOver(distance, target);
   }
 
-  gameOver(animationId) {
+  gameOver() {
     clearInterval(game.interval);
-    this.velocityMultiplier = 1;
   }
 
   checkColisionPerFrame(animationId, cb) {
     this.targets.forEach((target) => {
       this.updateTargetsPosition(target);
       this.playerColision(target)
-        ? (this.gameOver(animationId), cb(animationId))
+        ? (this.gameOver(), cb(animationId), this.clearData())
         : "";
     });
   }

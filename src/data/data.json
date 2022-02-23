@@ -4,5 +4,11 @@
     "game": "Aimlab",
     "description": "Aimlab é um jogo desenvolvido com o intuito de melhorar o seu reflexo e a sua precisão em um jogo de tiro. O objetivo do jogo é evitar que os alvos (circulos vermelhos) encoste no jogador (circulo azul). Para eliminar os alvos basta clickar em cima de cada elemento renderizado na tela. A dificuldade do jogo aumenta a cada alvo eliminado. ",
     "folderName": "first-project"
+  },
+  {
+    "name": "Bruno Wake Moraes Gonçalves",
+    "game": "Snake",
+    "description": "O objetivo do jogo é mover a cobra em direção à sua comida. O jogo acaba quando você encosta em uma das paredes ou em você mesmo.",
+    "folderName": "snake-game"
   }
 ]

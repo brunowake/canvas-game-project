@@ -34,9 +34,8 @@ function startGame() {
   game = new Game(player);
   modal.classList.add("hidden");
   game.spawnEnemies();
-  game.clearData();
-  animate();
   updateScoreElement(game.player.score);
+  animate();
 }
 
 function stopGame(animationId) {
