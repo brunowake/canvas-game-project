@@ -63,28 +63,21 @@ function renderListElements() {
 
 function dragStart(e) {
   e.dataTransfer.setData("text/plain", e.target.id);
-  setTimeout(() => {
-    addClass(e.target, "hide");
-    // e.target.classList.add("hide");
-  }, 0);
+
+  addClass(asideList, "drag-over");
+  addClass(box, "drag-over");
 }
 
 /* drop targets */
 function dragEnter(e) {
   e.preventDefault();
-
-  containClass(e.target, "asideList") || containClass(e.target, "box")
-    ? addClass(e.target, "drag-over")
-    : // e.target.classList.add("drag-over")
-      removeClass(e.target, "drag-over");
-  // e.target.classList.remove("drag-over")
 }
 
 function dragOver(e) {
   e.preventDefault();
-  containClass(e.target, "asideList") || containClass(e.target, "box")
-    ? addClass(e.target, "drag-over")
-    : removeClass(e.target, "drag-over");
+  // containClass(e.target, "asideList") || containClass(e.target, "box")
+  //   ? addClass(e.target, "drag-over")
+  //   : removeClass(e.target, "drag-over");
 }
 
 function dragLeave(e) {
@@ -92,20 +85,27 @@ function dragLeave(e) {
 }
 
 function drop(e) {
-  removeClass(e.target, "drag-over");
+  removeClass(box, "drag-over");
+  removeClass(asideList, "drag-over");
 
   // get the draggable element
   const id = e.dataTransfer.getData("text/plain");
 
   const draggable = document.getElementById(id);
 
+  if (e.target.children.length === 1) {
+    alert("Antes de escolher outro jogo, retire o selecionado!!");
+    return;
+  }
+
   // add it to the drop target
 
-  e.target.classList.contains("items") ? "" : e.target.appendChild(draggable);
+  e.target.classList.contains("box") || e.target.classList.contains("asideList")
+    ? e.target.appendChild(draggable)
+    : "";
 
   console.log(draggable.firstElementChild);
 
-  // display the draggable element
   draggable.parentElement.classList.contains("box")
     ? (addClass(draggable, "list-item-to-circle"),
       addClass(draggable, "align-img-circle"),
