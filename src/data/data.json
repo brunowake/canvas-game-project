@@ -8,7 +8,7 @@
   {
     "name": "Bruno Wake Moraes Gonçalves",
     "game": "Snake",
-    "description": "O objetivo do jogo é mover a cobra em direção à sua comida. O jogo acaba quando você encosta em uma das paredes ou em você mesmo.",
+    "description": "O objetivo do jogo é mover a cobra em direção à sua comida. O jogo acaba quando você encosta em uma das paredes ou em você mesmo. Pressione qualquer uma das seguintes teclas para começar o jogo '↑ ↓ → ←'. ",
     "folderName": "snake-game"
   }
 ]
